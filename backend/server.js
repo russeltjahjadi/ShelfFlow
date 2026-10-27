@@ -12,6 +12,7 @@ const PORT = process.env.PORT || 3000;
 const __dirname = path.resolve();
 
 app.use(express.json()); // middle layer - allows us to parse JSON data from the request body
+app.use(express.urlencoded({ extended: false })); // Good to include for form data too
 
 app.use("/api/products", productRoutes);
 app.use("/api/users", userRoutes);
