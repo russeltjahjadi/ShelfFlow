@@ -165,8 +165,9 @@ mern-stack-crud-application/
 
 ## 🙏 Credits
 
-Built following this tutorial:
+References:
 [Build a MERN Stack CRUD App — YouTube](https://www.youtube.com/watch?v=O3BUHwfHf84)
+[JWT Authentication](https://youtu.be/enopDSs3DRw)
 
 ---
 
