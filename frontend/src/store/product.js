@@ -76,13 +76,13 @@ export const useProductStore = create((set) => ({
   },
 
   updateProduct: async (productId, updatedProduct) => {
+    
     const res = await fetch(`/api/products/${productId}`, {
       method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers:getAuthHeaders(),
       body: JSON.stringify(updatedProduct),
     });
+    
     const data = await res.json();
     if (!data.success) return { success: false, message: data.message };
 
