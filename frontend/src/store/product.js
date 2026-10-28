@@ -1,9 +1,19 @@
 // Global state
 import { create } from "zustand";
 
+const getAuthHeaders = () => {
+  const userInfo = JSON.parse(localStorage.getItem("userInfo"));
+  return {
+    "Content-Type": "application/json",
+    ...(userInfo?.token && { Authorization: `Bearer ${userInfo.token}` }),
+  };
+};
+
 export const useProductStore = create((set) => ({
   products: [],
+
   setProducts: (products) => set({ products }),
+
   createProduct: async (newProduct) => {
     if (!newProduct.name || !newProduct.image || !newProduct.price) {
       return { success: false, message: "Please fill in all fields!!" };
@@ -12,9 +22,7 @@ export const useProductStore = create((set) => ({
     try {
       const res = await fetch("/api/products", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers:getAuthHeaders(),
         body: JSON.stringify(newProduct),
       });
 
@@ -29,9 +37,14 @@ export const useProductStore = create((set) => ({
       return { success: false, message: "Server error" };
     }
   },
+
   fetchProducts: async () => {
     try {
-      const res = await fetch("/api/products");
+      // const res = await fetch("/api/products");
+      
+      const res = await fetch("/api/products", {
+        headers: getAuthHeaders(),
+      });
 
       if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
 
@@ -44,6 +57,7 @@ export const useProductStore = create((set) => ({
       console.error("Failed to fetch products:", error.message);
     }
   },
+
   deleteProduct: async (productId) => {
     const res = await fetch(`/api/products/${productId}`, {
       method: "DELETE",
@@ -60,6 +74,7 @@ export const useProductStore = create((set) => ({
 
     return { success: true, message: data.message };
   },
+
   updateProduct: async (productId, updatedProduct) => {
     const res = await fetch(`/api/products/${productId}`, {
       method: "PUT",
@@ -79,4 +94,5 @@ export const useProductStore = create((set) => ({
     }));
     return { success: true, message: data.message };
   },
+
 }));

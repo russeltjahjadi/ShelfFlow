@@ -1,11 +1,13 @@
 import mongoose from "mongoose";
 import Product from "../models/product.model.js";
 import { validatePrice } from "../utils/validators.js";
+import asyncHandler from "express-async-handler";
+import User from "../models/userModels.js";
 
 export const getProducts = async (req, res) => {
   try {
     // The empty object {} means we want to find all products without any filter
-    const products = await Product.find({});
+    const products = await Product.find({user: req.User.id});
     res.status(200).json({ success: true, data: products });
   } catch (error) {
     console.error("Error in Get Products: ", error);
@@ -22,7 +24,13 @@ export const createProduct = async (req, res) => {
       .json({ success: false, message: "Please provide all fields." });
   }
 
-  const newProduct = new Product(product);
+  // const newProduct = new Product(product);
+  const newProduct = await Product.create({
+    user: req.User.id,
+    name: product.name,
+    price: product.price,
+    image: product.image,
+  })
 
   const priceCheck = validatePrice(product.price);
   if (!priceCheck.valid) {
@@ -54,6 +62,17 @@ export const updateProduct = async (req, res) => {
       .json({ success: false, message: "Invalid product ID format." });
   }
 
+  const user = await User.findById(req.User.id);
+  if (!user){
+    res.status(401);
+    throw new Error("User not found");
+  }
+  // Make sure the logged in user matches the product's user
+  if (product.User.id.toString() !== user.id){
+    res.status(401);
+    throw new Error("User not authorized");
+  }
+
   try {
     const updatedProduct = await Product.findByIdAndUpdate(id, product, {
       new: true,
@@ -77,6 +96,17 @@ export const deleteProduct = async (req, res) => {
     return res
       .status(404)
       .json({ success: false, message: "Invalid product ID format." });
+  }
+
+  const user = await User.findById(req.User.id);
+  if (!user){
+    res.status(401);
+    throw new Error("User not found");
+  }
+  // Make sure the logged in user matches the product's user
+  if (product.User.id.toString() !== user.id){
+    res.status(401);
+    throw new Error("User not authorized");
   }
 
   try {

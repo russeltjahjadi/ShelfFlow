@@ -4,6 +4,8 @@ import CreatePage from "./pages/CreatePage";
 import Navbar from "./components/Navbar";
 import { Box } from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
+import LoginPage from "./pages/LoginPage";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 function App() {
   const bg = useColorModeValue("white", "gray.900");
@@ -12,8 +14,15 @@ function App() {
     <Box minH={"100vh"} bg={bg}>
       <Navbar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
-        <Route path="/create" element={<CreatePage />} />
+        <Route path="/login" element={<LoginPage />} />
+
+        <Route path="/" element={<ProtectedRoute>
+              <HomePage />
+            </ProtectedRoute>} />
+        <Route path="/create" element={<ProtectedRoute>
+              <CreatePage />
+            </ProtectedRoute>} />
+        
       </Routes>
     </Box>
   );
