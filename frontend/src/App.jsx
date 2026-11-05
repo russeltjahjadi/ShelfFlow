@@ -12,7 +12,7 @@ function App() {
 
   return (
     <Box minH={"100vh"} bg={bg}>
-      <Navbar />
+      
       <Routes>
         <Route path="/login" element={<LoginPage />} />
 
