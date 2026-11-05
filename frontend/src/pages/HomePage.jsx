@@ -1,31 +1,33 @@
 import React, { useEffect } from "react";
+import { useColorModeValue } from "@/components/ui/color-mode";
+
 import { Container, SimpleGrid, Stack, Text, VStack } from "@chakra-ui/react";
 import { Link } from "react-router-dom";
 import { useProductStore } from "../store/product";
 import { Heading } from "@chakra-ui/react";
 import ProductCard from "../components/ProductCard";
+import Navbar from "../components/Navbar";
 const HomePage = () => {
   const { fetchProducts, products } = useProductStore();
-
+  const iconColor = useColorModeValue("gray.800", "white");
+  
   useEffect(() => {
     fetchProducts();
   }, [fetchProducts]);
 
-  console.log("products: ", products);
-
   return (
     <>
+      <Navbar />
       <Container>
         <VStack spacing={8}>
           <Text
-            fontSize={"30"}
+            fontSize={{ base: "22", sm: "28" }}
             fontWeight={"bold"}
-            bgGradient={"linear(to-r, cyan.400, blue.500)"}
-            bgClip={"text"}
+            textTransform={"uppercase"}
             textAlign={"center"}
+            color={iconColor}
           >
-            {" "}
-            Current Products 🚀
+            Current Products
           </Text>
 
           <SimpleGrid
@@ -66,3 +68,6 @@ const HomePage = () => {
 };
 
 export default HomePage;
+
+
+// Note: use this for design reference: https://apidog.com/blog/what-is-shadcn-ui/
