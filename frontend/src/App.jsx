@@ -6,6 +6,7 @@ import { Box } from "@chakra-ui/react";
 import { useColorModeValue } from "@/components/ui/color-mode";
 import LoginPage from "./pages/LoginPage";
 import ProtectedRoute from "./components/ProtectedRoute";
+import RegisterPage from "./pages/RegisterPage";
 
 function App() {
   const bg = useColorModeValue("white", "gray.900");
@@ -15,7 +16,7 @@ function App() {
       
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-
+        <Route path="/register" element={<RegisterPage/>} />
         <Route path="/" element={<ProtectedRoute>
               <HomePage />
             </ProtectedRoute>} />

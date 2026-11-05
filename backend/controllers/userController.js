@@ -4,20 +4,22 @@ import asyncHandler from "express-async-handler";
 import User from "../models/userModels.js";
 
 // Description: register new user
-// Route: POST /api/users
+// Route: POST /api/users/register
 // acccess type: public
 export const registerUser = asyncHandler(async (req, res) => {
   const { name, email, password } = req.body;
 
   if (!name || !email || !password) {
-    res.status(400);
-    throw new Error("Please enter all fields");
+    return res
+      .status(400)
+      .json({ success: false, message: "Please provide all fields." });
   }
 
   const userExists = await User.findOne({ email });
   if (userExists) {
-    res.status(400);
-    throw new Error("User already exists");
+    return res
+      .status(400)
+      .json({ success: false, message: "User already exists" });
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -32,8 +34,9 @@ export const registerUser = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(400);
-    throw new Error("Invalid user data");
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid user data" });
   }
 });
 
@@ -53,8 +56,9 @@ export const loginUser = asyncHandler(async (req, res) => {
       token: generateToken(user._id),
     });
   } else {
-    res.status(400);
-    throw new Error("Invalid credentials");
+    return res
+      .status(400)
+      .json({ success: false, message: "Invalid credentials" });
   }
 });
 
@@ -62,8 +66,8 @@ export const loginUser = asyncHandler(async (req, res) => {
 // Route: GET /api/users/me
 // acccess type: private
 export const getMe = asyncHandler(async (req, res) => {
-  const {_id, name, email} = await User.findById(req.User.id)
-  res.status(200).json({id: _id,name, email})
+  const { _id, name, email } = await User.findById(req.User.id);
+  res.status(200).json({ id: _id, name, email });
 });
 
 // Generate JWT
